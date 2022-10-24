@@ -29,8 +29,37 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
+def find_all_repetitions(dice)
+  repetitions = {}
+
+  dice.uniq.each do |number|
+    repetitions[number] = dice.count number
+  end
+
+  repetitions
+end
+
 def score(dice)
-  # You need to write this method
+  score = 0
+  # We go value on a dice as a key and number of a repeats as a value
+  find_all_repetitions(dice).each do |value, repeats|
+    three_repeats = (repeats.divmod 3).first
+    another_repeats = (repeats.divmod 3).last
+    case value
+    when 1
+      score += 1000 * three_repeats
+      score += 100 * another_repeats
+    when 5
+      score += 500 * three_repeats
+      score += 50 * another_repeats
+    else
+      # e.g. [2, 2, 2], three repeats means that we need a value just convert to 200, but [2, 2, 2, 2, 2, 2] 2 is three repeat twice
+      # so, we need to multiply converted value on repeat times
+      score += 100 * value * three_repeats
+    end
+  end
+
+  score
 end
 
 class AboutScoringProject < Neo::Koan
